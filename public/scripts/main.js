@@ -1,98 +1,101 @@
-// Array para almacenar las tareas
-let tasks = [];
+// scripts/main.js
 
-// Función para mostrar el modal
-function showModal(task = null) {
-  const modalContainer = document.getElementById('modal-container');
-  const modalTitle = document.getElementById('modal-title');
-  const saveBtn = document.getElementById('saveBtn');
-  const taskTitleInput = document.getElementById('taskTitle');
-  const taskDescriptionInput = document.getElementById('taskDescription');
+import { Task } from '../../src/components/Task.js';  // Importa la clase Task
+import { TaskManager } from '../../src/components/TaskManager.js';  // Importa la clase TaskManager
+import { Modal } from '../../src/components/Modal.js';  // Importa la clase Modal
+import { App } from '../../src/app.js';  // Importa la clase App
 
-  // Mostrar el modal
-  modalContainer.style.display = 'flex';
+// Crear instancia de TaskManager
+const taskManager = new TaskManager();
 
-  // Configurar el modal según si es tarea nueva o editar
-  if (task) {
-    modalTitle.textContent = 'Editar Tarea';
-    taskTitleInput.value = task.title;
-    taskDescriptionInput.value = task.description;
-    saveBtn.textContent = 'Guardar Cambios';
-    saveBtn.onclick = function (event) {
-      event.preventDefault();
-      task.title = taskTitleInput.value;
-      task.description = taskDescriptionInput.value;
-      renderTasks();
-      closeModal();
-    };
-  } else {
-    modalTitle.textContent = 'Nueva Tarea';
-    taskTitleInput.value = '';
-    taskDescriptionInput.value = '';
-    saveBtn.textContent = 'Agregar Tarea';
-    saveBtn.onclick = function (event) {
-      event.preventDefault();
-      const newTask = {
-        title: taskTitleInput.value,
-        description: taskDescriptionInput.value
-      };
-      tasks.push(newTask);
-      renderTasks();
-      closeModal();
-    };
-  }
-}
+// Referencias a elementos del DOM
+const addTaskBtn = document.getElementById('addTask');
+const modalContainer = document.getElementById('modal-container');
+const closeModalBtn = document.getElementById('closeModal');
+const taskForm = document.getElementById('taskForm');
+const taskTitle = document.getElementById('taskTitle');
+const taskDescription = document.getElementById('taskDescription');
+const taskList = document.querySelector('.task-list');
 
-// Función para cerrar el modal
-function closeModal() {
-  document.getElementById('modal-container').style.display = 'none';
-}
+// Variables para editar
+let editingTaskIndex = null; // Almacena el índice de la tarea que estamos editando
 
-// Función para renderizar la lista de tareas
-function renderTasks() {
-  const taskList = document.querySelector('.task-list');
-  taskList.innerHTML = ''; // Limpiar la lista de tareas
-
-  tasks.forEach((task, index) => {
-    const taskItem = document.createElement('li');
-    taskItem.innerHTML = `
-      <div>
-        <strong>${task.title}</strong>
-        <p>${task.description}</p>
-      </div>
-      <button class="btn-edit" data-index="${index}">Editar</button>
-      <button class="btn-delete" data-index="${index}">Eliminar</button>
-    `;
-    taskList.appendChild(taskItem);
-
-    // Vincular el botón de editar
-    taskItem.querySelector('.btn-edit').addEventListener('click', function () {
-      const taskIndex = this.getAttribute('data-index');
-      showModal(tasks[taskIndex]); // Mostrar modal para editar
-    });
-
-    // Vincular el botón de eliminar
-    taskItem.querySelector('.btn-delete').addEventListener('click', function () {
-      const taskIndex = this.getAttribute('data-index');
-      tasks.splice(taskIndex, 1); // Eliminar la tarea
-      renderTasks(); // Re-renderizar la lista
-    });
-  });
-}
-
-// Vincular el botón de agregar nueva tarea
-document.getElementById('addTask').addEventListener('click', () => {
-  showModal(); // Mostrar el modal para agregar tarea
+// Mostrar modal para agregar nueva tarea
+addTaskBtn.addEventListener('click', () => {
+  modalContainer.style.display = 'block';
+  document.getElementById('modal-title').textContent = 'Nueva Tarea';
+  taskTitle.value = '';  // Limpiar campos
+  taskDescription.value = '';
+  editingTaskIndex = null;  // No estamos editando ninguna tarea
 });
 
-// Vincular el botón de cerrar modal
-document.getElementById('closeModal').addEventListener('click', closeModal);
+// Cerrar el modal
+closeModalBtn.addEventListener('click', () => {
+  modalContainer.style.display = 'none';
+});
 
-// Inicializar la renderización de tareas al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
+// Manejar el envío del formulario (agregar o editar tarea)
+taskForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const newTask = new Task(taskTitle.value, taskDescription.value);
+
+  if (editingTaskIndex !== null) {
+    // Si estamos editando una tarea existente, actualizamos esa tarea
+    taskManager.editTask(editingTaskIndex, newTask);
+  } else {
+    // Si estamos agregando una tarea nueva
+    taskManager.addTask(newTask);
+  }
+
+  taskTitle.value = '';
+  taskDescription.value = '';
+  modalContainer.style.display = 'none';  // Cerrar modal
+
+  // Volver a renderizar las tareas
   renderTasks();
 });
 
+// Función para mostrar las tareas en la lista
+function renderTasks() {
+  const tasks = taskManager.getAllTasks();
+  taskList.innerHTML = ''; // Limpiar la lista antes de renderizar
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.classList.add('task-item');
+    li.dataset.id = index; // Asignamos el índice como ID de la tarea
+
+    li.innerHTML = `
+      <span class="task-title">${task.title}</span>
+      <span class="task-description">${task.description}</span>
+      <button class="edit-task">Editar</button>
+      <button class="delete-task">Eliminar</button>
+    `;
+
+    // Agregar eventos para los botones de editar y eliminar
+    li.querySelector('.edit-task').addEventListener('click', () => {
+      // Llenamos el modal con los datos de la tarea para editarla
+      taskTitle.value = task.title;
+      taskDescription.value = task.description;
+      document.getElementById('modal-title').textContent = 'Editar Tarea';
+      modalContainer.style.display = 'block';
+
+      // Establecer la tarea a editar
+      editingTaskIndex = index;
+    });
+
+    li.querySelector('.delete-task').addEventListener('click', () => {
+      // Eliminar la tarea
+      taskManager.deleteTask(index);
+      renderTasks(); // Volver a renderizar la lista
+    });
+
+    taskList.appendChild(li);
+  });
+}
+
+// Inicializamos la lista de tareas
+renderTasks();
 
 // Obtener el botón de Cerrar sesión
 const logoutBtn = document.getElementById('logoutBtn');

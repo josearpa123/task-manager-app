@@ -207,12 +207,8 @@ button:hover {
     }
 }
 
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-}
-
-.btn-add, .btn-edit, .btn-delete, .btn-logout {
+/* Estilos adicionales para botones pequeños y flotantes */
+.btn-add,.btn-logout {
     margin: 10px;
     padding: 5px 15px; /* Reducido el padding para hacerlo más pequeño */
     cursor: pointer;
@@ -230,65 +226,14 @@ body {
     left: 10px; /* Colocamos el botón en la parte superior izquierda */
 }
 
-.modal-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 button {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Verde */
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Estilo para el botón de Cerrar sesión */
 .btn-logout {
     position: fixed;
     top: 10px;
@@ -306,4 +251,108 @@ textarea {
 
 .btn-logout:hover {
     background-color: #e53935; /* Rojo más oscuro cuando se pasa el ratón */
+}
+
+/* Estilo general de la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+  
+/* Contenedor principal de la lista */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px;
+}
+  
+/* Elemento de tarea */
+.task-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+  
+/* Hover effect para tareas */
+.task-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+  
+/* Título y descripción de la tarea */
+.task-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-right: 20px;
+}
+  
+.task-description {
+    font-size: 1em;
+    color: #555;
+    flex-grow: 1;
+    margin-right: 20px;
+}
+  
+/* Botones de editar y eliminar */
+button {
+    background-color: #3498db; /* Azul */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+  
+/* Cambiar color del botón al pasar el mouse */
+button:hover {
+    background-color: #2980b9; /* Azul oscuro */
+}
+  
+/* Modal */
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+  
+.modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+  
+/* Botones dentro del modal */
+#closeModal, #saveBtn {
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+  
+#closeModal:hover, #saveBtn:hover {
+    background-color: #c0392b; /* Rojo oscuro */
 }
