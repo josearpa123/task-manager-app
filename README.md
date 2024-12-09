@@ -88,3 +88,5 @@ npm start
 Compila para producción:
 
     npm run build
+
+    npm run
