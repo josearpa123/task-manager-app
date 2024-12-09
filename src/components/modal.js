@@ -1,3 +1,4 @@
+// src/components/modal.js
 export function showModal(task = null) {
     const modalHTML = `
       <div class="modal-overlay">

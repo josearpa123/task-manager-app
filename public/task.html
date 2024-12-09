@@ -1,29 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de Tareas</title>
-  <link rel="stylesheet" href="./styles/main.css">
+  <title>Gestión de Tareas</title>
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <header class="tasks-header">
-    <h1>Tus Tareas</h1>
-    <button id="addTask" class="btn-add">+ Nueva Tarea</button>
-  </header>
-  <main class="task-list-container">
-    <ul class="task-list">
-      <li class="task-item">
-        <span class="task-text">Tarea 1</span>
-        <button class="btn-edit">Editar</button>
-        <button class="btn-delete">Eliminar</button>
-      </li>
-      <li class="task-item">
-        <span class="task-text">Tarea 2</span>
-        <button class="btn-edit">Editar</button>
-        <button class="btn-delete">Eliminar</button>
-      </li>
-    </ul>
-  </main>
+
+  <!-- Botón para agregar nueva tarea -->
+  <button id="addTask" class="btn-add">+ Nueva Tarea</button>
+
+  <!-- Lista de tareas -->
+  <ul class="task-list">
+    <!-- Las tareas se agregarán aquí dinámicamente -->
+  </ul>
+
+  <!-- Modal para agregar o editar tarea -->
+  <div id="modal-container" class="modal-container" style="display: none;">
+    <div class="modal">
+      <h2 id="modal-title">Nueva Tarea</h2>
+      <form id="taskForm">
+        <label for="taskTitle">Título de la tarea:</label>
+        <input type="text" id="taskTitle" required placeholder="Escribe el título de la tarea..." />
+        
+        <label for="taskDescription">Descripción de la tarea:</label>
+        <textarea id="taskDescription" required placeholder="Escribe la descripción de la tarea..."></textarea>
+        
+        <button type="submit" id="saveBtn">Agregar Tarea</button>
+      </form>
+      <button id="closeModal">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="scripts/main.js"></script>
 </body>
 </html>
