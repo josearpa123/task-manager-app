@@ -92,3 +92,16 @@ document.getElementById('closeModal').addEventListener('click', closeModal);
 document.addEventListener('DOMContentLoaded', () => {
   renderTasks();
 });
+
+
+// Obtener el botón de Cerrar sesión
+const logoutBtn = document.getElementById('logoutBtn');
+
+// Agregar evento de clic para el botón de Cerrar sesión
+logoutBtn.addEventListener('click', function() {
+  // Aquí puedes agregar la lógica para cerrar sesión
+  // Por ejemplo, eliminar datos de sesión o redirigir a otra página
+
+  // Redirigir a la página de login (suponiendo que tengas una página de login)
+  window.location.href = 'index.html'; // Cambia a la URL de tu página de login
+});
