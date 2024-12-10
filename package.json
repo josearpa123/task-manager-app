@@ -7,9 +7,26 @@
     "start": "live-server --open=public/index.html"
   },
   "dependencies": {
-    
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongodb": "^6.11.0"
   },
   "devDependencies": {
     "live-server": "^1.2.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josearpa123/task-manager-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josearpa123/task-manager-app/issues"
+  },
+  "homepage": "https://github.com/josearpa123/task-manager-app#readme"
 }

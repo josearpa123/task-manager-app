@@ -1,4 +1,4 @@
-// components/App.js
+// components/App.jsq
 import { TaskManager } from './components/TaskManager.js';
 import { Modal } from './components/Modal.js';
 
