@@ -22,14 +22,16 @@ document.querySelector(".signup-form").addEventListener("submit", async (event) 
     });
 
     const data = await response.json();
-    
     if (response.ok) {
       alert("Usuario registrado con éxito");
+      
+      // Redirigir a la página task.html después de un registro exitoso
+      window.location.href = "task.html";
     } else {
-      alert(`Error: ${data.message || 'Error desconocido'}`);
+      alert(`Error: ${data.message}`);
     }
   } catch (error) {
     console.error("Error al registrar usuario:", error);
-    alert("Error al registrar usuario. Ver consola para más detalles.");
+    alert("Error al registrar usuario");
   }
 });
