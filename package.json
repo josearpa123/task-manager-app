@@ -4,7 +4,7 @@
   "description": "Proyecto de tareas colaborativas",
   "main": "index.js",
   "scripts": {
-    "start": "live-server --open=public/index.html"
+  "start": "concurrently \"node src/services/server.js\" \"live-server --open=public/index.html\""
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -13,6 +13,7 @@
     "mongodb": "^6.11.0"
   },
   "devDependencies": {
+    "concurrently": "^9.1.0",
     "live-server": "^1.2.0"
   },
   "directories": {

@@ -1,110 +1,114 @@
-// scripts/main.js
+import { Task } from '/src/components/Task.js'; // Asegúrate de que la ruta sea correcta
+import { TaskManager } from '/src/components/TaskManager.js'; // Asegúrate de que la ruta sea correcta
+import { Modal } from '/src/components/Modal.js'; // Asegúrate de que la ruta sea correcta
 
-import { Task } from '../../src/components/Task.js';  // Importa la clase Task
-import { TaskManager } from '../../src/components/TaskManager.js';  // Importa la clase TaskManager
-import { Modal } from '../../src/components/Modal.js';  // Importa la clase Modal
-import { App } from '../../src/app.js';  // Importa la clase App
-
-// Crear instancia de TaskManager
-const taskManager = new TaskManager();
-
-// Referencias a elementos del DOM
-const addTaskBtn = document.getElementById('addTask');
-const modalContainer = document.getElementById('modal-container');
-const closeModalBtn = document.getElementById('closeModal');
-const taskForm = document.getElementById('taskForm');
-const taskTitle = document.getElementById('taskTitle');
-const taskDescription = document.getElementById('taskDescription');
-const taskList = document.querySelector('.task-list');
-
-// Variables para editar
-let editingTaskIndex = null; // Almacena el índice de la tarea que estamos editando
-
-// Mostrar modal para agregar nueva tarea
-addTaskBtn.addEventListener('click', () => {
-  modalContainer.style.display = 'block';
-  document.getElementById('modal-title').textContent = 'Nueva Tarea';
-  taskTitle.value = '';  // Limpiar campos
-  taskDescription.value = '';
-  editingTaskIndex = null;  // No estamos editando ninguna tarea
-});
-
-// Cerrar el modal
-closeModalBtn.addEventListener('click', () => {
-  modalContainer.style.display = 'none';
-});
-
-// Manejar el envío del formulario (agregar o editar tarea)
-taskForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const newTask = new Task(taskTitle.value, taskDescription.value);
-
-  if (editingTaskIndex !== null) {
-    // Si estamos editando una tarea existente, actualizamos esa tarea
-    taskManager.editTask(editingTaskIndex, newTask);
-  } else {
-    // Si estamos agregando una tarea nueva
-    taskManager.addTask(newTask);
+document.addEventListener('DOMContentLoaded', () => {
+  if (!localStorage.getItem('userToken')) {
+    window.location.href = 'index.html'; // Redirigir a login si no hay token
   }
 
-  taskTitle.value = '';
-  taskDescription.value = '';
-  modalContainer.style.display = 'none';  // Cerrar modal
+  const taskManager = new TaskManager();
+  const modal = new Modal(taskManager);
 
-  // Volver a renderizar las tareas
-  renderTasks();
-});
+  const taskList = document.querySelector('.task-list');
+  const addTaskBtn = document.getElementById('addTask');
+  const modalContainer = document.getElementById('modal-container');
+  const closeModalBtn = document.getElementById('closeModal');
+  const taskForm = document.getElementById('taskForm');
+  const taskTitle = document.getElementById('taskTitle');
+  const taskDescription = document.getElementById('taskDescription');
 
-// Función para mostrar las tareas en la lista
-function renderTasks() {
-  const tasks = taskManager.getAllTasks();
-  taskList.innerHTML = ''; // Limpiar la lista antes de renderizar
-  tasks.forEach((task, index) => {
-    const li = document.createElement('li');
-    li.classList.add('task-item');
-    li.dataset.id = index; // Asignamos el índice como ID de la tarea
+  // Verificar que los elementos existen
+  if (!addTaskBtn || !modalContainer || !closeModalBtn || !taskForm || !taskTitle || !taskDescription || !taskList) {
+    console.error('Error: No se encuentran todos los elementos del DOM');
+    return;
+  }
 
-    li.innerHTML = `
-      <span class="task-title">${task.title}</span>
-      <span class="task-description">${task.description}</span>
-      <button class="edit-task">Editar</button>
-      <button class="delete-task">Eliminar</button>
-    `;
+  let editingTaskId = null; // Identificador de la tarea que estamos editando
 
-    // Agregar eventos para los botones de editar y eliminar
-    li.querySelector('.edit-task').addEventListener('click', () => {
-      // Llenamos el modal con los datos de la tarea para editarla
-      taskTitle.value = task.title;
-      taskDescription.value = task.description;
-      document.getElementById('modal-title').textContent = 'Editar Tarea';
-      modalContainer.style.display = 'block';
-
-      // Establecer la tarea a editar
-      editingTaskIndex = index;
-    });
-
-    li.querySelector('.delete-task').addEventListener('click', () => {
-      // Eliminar la tarea
-      taskManager.deleteTask(index);
-      renderTasks(); // Volver a renderizar la lista
-    });
-
-    taskList.appendChild(li);
+  // Mostrar modal para agregar nueva tarea
+  addTaskBtn.addEventListener('click', () => {
+    modalContainer.style.display = 'flex'; // Mostrar el modal
+    document.getElementById('modal-title').textContent = 'Nueva Tarea';
+    taskTitle.value = ''; // Limpiar campos
+    taskDescription.value = '';
+    editingTaskId = null; // Resetear el modo de edición
   });
-}
 
-// Inicializamos la lista de tareas
-renderTasks();
+  // Cerrar el modal
+  closeModalBtn.addEventListener('click', () => {
+    modalContainer.style.display = 'none';
+  });
 
-// Obtener el botón de Cerrar sesión
-const logoutBtn = document.getElementById('logoutBtn');
+  // Manejar el envío del formulario (agregar o editar tarea)
+  taskForm.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-// Agregar evento de clic para el botón de Cerrar sesión
-logoutBtn.addEventListener('click', function() {
-  // Aquí puedes agregar la lógica para cerrar sesión
-  // Por ejemplo, eliminar datos de sesión o redirigir a otra página
+    const title = taskTitle.value.trim();
+    const description = taskDescription.value.trim();
 
-  // Redirigir a la página de login (suponiendo que tengas una página de login)
-  window.location.href = 'index.html'; // Cambia a la URL de tu página de login
+    if (!title || !description) {
+      alert('Por favor, ingresa tanto el título como la descripción de la tarea.');
+      return;
+    }
+
+    if (editingTaskId !== null) {
+      // Editar tarea existente
+      taskManager.editTask(editingTaskId, new Task(title, description, editingTaskId));
+    } else {
+      // Agregar nueva tarea sin validación de duplicados
+      taskManager.addTask(new Task(title, description));
+    }
+
+    modalContainer.style.display = 'none'; // Cerrar modal
+    renderTasks(); // Renderizar lista de tareas
+  });
+
+  function renderTasks() {
+    const tasks = taskManager.getAllTasks();
+    taskList.innerHTML = ''; // Limpiar la lista antes de renderizar
+
+    if (tasks.length === 0) {
+      taskList.innerHTML = '<li class="task-list-placeholder">No hay tareas. ¡Comienza agregando una!</li>';
+      return;
+    }
+
+    tasks.forEach((task) => {
+      const li = document.createElement('li');
+      li.classList.add('task-item');
+      li.dataset.id = task.id;
+
+      li.innerHTML = `
+        <span class="task-title">${task.title}</span>
+        <span class="task-description">${task.description}</span>
+        <button class="edit-task">Editar</button>
+        <button class="delete-task">Eliminar</button>
+      `;
+
+      li.querySelector('.edit-task').addEventListener('click', () => {
+        taskTitle.value = task.title;
+        taskDescription.value = task.description;
+        document.getElementById('modal-title').textContent = 'Editar Tarea';
+        modalContainer.style.display = 'flex';
+        editingTaskId = task.id; // Almacenar el ID para editar
+      });
+
+      li.querySelector('.delete-task').addEventListener('click', () => {
+        taskManager.deleteTask(task.id); // Eliminar tarea
+        renderTasks(); // Volver a renderizar
+      });
+
+      taskList.appendChild(li);
+    });
+  }
+
+  // Inicializar tareas al cargar la página
+  renderTasks();
+
+  // Botón de cerrar sesión
+  const logoutBtn = document.getElementById('logoutBtn');
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('userToken');
+    window.location.href = 'index.html';
+  });
 });

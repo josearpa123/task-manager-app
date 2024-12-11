@@ -1,36 +1,44 @@
-// components/App.jsq
-import { TaskManager } from './components/TaskManager.js';
+import { Task } from './components/Task.js';
 import { Modal } from './components/Modal.js';
+import { TaskManager } from './components/TaskManager.js';
 
 export class App {
   constructor() {
-    // Inicializa los componentes
     this.taskManager = new TaskManager();
     this.modal = new Modal(this.taskManager);
-
-    // Configura los eventos de los botones
     this.setupEventListeners();
   }
 
+  // Setup event listeners
   setupEventListeners() {
-    // Evento para agregar tarea
-    document.getElementById('addTask').addEventListener('click', () => {
-      this.modal.showModal();
-    });
+    const addTaskBtn = document.getElementById('addTask');
+    if (addTaskBtn) {
+      addTaskBtn.addEventListener('click', () => {
+        this.modal.showModal();
+      });
+    }
 
-    // Evento para cerrar el modal
-    document.getElementById('closeModal').addEventListener('click', () => {
-      this.modal.closeModal();
-    });
+    const closeModalBtn = document.getElementById('closeModal');
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', () => {
+        this.modal.closeModal();
+      });
+    }
 
-    // Evento para el formulario de tarea
-    document.getElementById('taskForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const title = document.getElementById('taskTitle').value;
-      const description = document.getElementById('taskDescription').value;
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+      taskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('taskTitle').value;
+        const description = document.getElementById('taskDescription').value;
 
-      this.taskManager.addTask(title, description);
-      this.modal.closeModal();  // Cierra el modal después de agregar la tarea
-    });
+        if (title && description) {
+          this.taskManager.addTask(new Task(title, description));
+          this.modal.closeModal();
+        } else {
+          alert("Por favor, completa todos los campos de la tarea.");
+        }
+      });
+    }
   }
 }

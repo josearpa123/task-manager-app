@@ -1,34 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro</title>
-  <link rel="stylesheet" href="./styles/main.css">
+  <title>TaskMaster - Registro</title>
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div class="signup-container">
+  <div class="container">
+    <h1>Crear Cuenta</h1>
     <form class="signup-form">
-      <h1>Crear una cuenta</h1>
       <div class="form-group">
-        <label for="name">Nombre</label>
-        <input type="text" id="name" placeholder="Ingresa tu nombre" required>
+        <input type="text" id="name" placeholder="Nombre" required>
       </div>
       <div class="form-group">
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" placeholder="Ingresa tu correo" required>
+        <input type="email" id="email" placeholder="Correo Electrónico" required>
       </div>
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Crea una contraseña" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
       </div>
       <div class="form-group">
-        <label for="confirm-password">Confirmar contraseña</label>
-        <input type="password" id="confirm-password" placeholder="Repite tu contraseña" required>
+        <input type="password" id="confirm-password" placeholder="Confirmar Contraseña" required>
       </div>
-      <button type="submit" class="btn-signup">Registrar</button>
+      <button type="submit">Registrar</button>
+      <p id="errorMessage" class="error-message">Todos los campos son obligatorios</p>
     </form>
+    <div class="form-footer">
+      <a href="index.html">Volver al Inicio</a>
+    </div>
   </div>
-    <script src="./scripts/mongo.js"></script>
+  <script type="module" src="scripts/signup.js"></script>
 </body>
 </html>
