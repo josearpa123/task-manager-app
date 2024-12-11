@@ -1,6 +1,6 @@
-import { Task } from '/src/components/Task.js'; // Asegúrate de que la ruta sea correcta
-import { TaskManager } from '/src/components/TaskManager.js'; // Asegúrate de que la ruta sea correcta
-import { Modal } from '/src/components/Modal.js'; // Asegúrate de que la ruta sea correcta
+import { Task } from '../../src/components/Task.js'; // Asegúrate de que la ruta sea correcta
+import { TaskManager } from '../../src/components/TaskManager.js'; // Asegúrate de que la ruta sea correcta
+import { Modal } from '../../src/components/Modal.js'; // Asegúrate de que la ruta sea correcta
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!localStorage.getItem('userToken')) {
@@ -8,40 +8,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const taskManager = new TaskManager();
-  const modal = new Modal(taskManager);
-
-  const taskList = document.querySelector('.task-list');
-  const addTaskBtn = document.getElementById('addTask');
   const modalContainer = document.getElementById('modal-container');
-  const closeModalBtn = document.getElementById('closeModal');
   const taskForm = document.getElementById('taskForm');
   const taskTitle = document.getElementById('taskTitle');
   const taskDescription = document.getElementById('taskDescription');
-
-  // Verificar que los elementos existen
-  if (!addTaskBtn || !modalContainer || !closeModalBtn || !taskForm || !taskTitle || !taskDescription || !taskList) {
-    console.error('Error: No se encuentran todos los elementos del DOM');
-    return;
-  }
-
-  let editingTaskId = null; // Identificador de la tarea que estamos editando
+  const taskList = document.querySelector('.task-list');
+  let editingTaskId = null;
 
   // Mostrar modal para agregar nueva tarea
-  addTaskBtn.addEventListener('click', () => {
-    modalContainer.style.display = 'flex'; // Mostrar el modal
+  document.getElementById('addTask').addEventListener('click', () => {
+    modalContainer.style.display = 'flex';
     document.getElementById('modal-title').textContent = 'Nueva Tarea';
-    taskTitle.value = ''; // Limpiar campos
+    taskTitle.value = '';
     taskDescription.value = '';
-    editingTaskId = null; // Resetear el modo de edición
+    editingTaskId = null;
   });
 
   // Cerrar el modal
-  closeModalBtn.addEventListener('click', () => {
+  document.getElementById('closeModal').addEventListener('click', () => {
     modalContainer.style.display = 'none';
   });
 
-  // Manejar el envío del formulario (agregar o editar tarea)
-  taskForm.addEventListener('submit', (event) => {
+  // Lógica centralizada del formulario
+  function handleTaskFormSubmit(event) {
     event.preventDefault();
 
     const title = taskTitle.value.trim();
@@ -53,27 +42,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (editingTaskId !== null) {
-      // Editar tarea existente
       taskManager.editTask(editingTaskId, new Task(title, description, editingTaskId));
     } else {
-      // Agregar nueva tarea sin validación de duplicados
-      taskManager.addTask(new Task(title, description));
+      const newTask = new Task(title, description);
+      taskManager.addTask(newTask);
+
+      // Insertar la nueva tarea en la parte superior de la lista
+      taskManager.tasks.unshift(newTask); // Inserta la nueva tarea al inicio
     }
 
-    modalContainer.style.display = 'none'; // Cerrar modal
-    renderTasks(); // Renderizar lista de tareas
-  });
+    modalContainer.style.display = 'none';
+    renderTasks();
+  }
 
+  taskForm.removeEventListener('submit', handleTaskFormSubmit);
+  taskForm.addEventListener('submit', handleTaskFormSubmit);
+
+  // Función para renderizar tareas
   function renderTasks() {
     const tasks = taskManager.getAllTasks();
-    taskList.innerHTML = ''; // Limpiar la lista antes de renderizar
+    taskList.innerHTML = '';
 
     if (tasks.length === 0) {
       taskList.innerHTML = '<li class="task-list-placeholder">No hay tareas. ¡Comienza agregando una!</li>';
       return;
     }
 
-    tasks.forEach((task) => {
+    tasks.forEach(task => {
       const li = document.createElement('li');
       li.classList.add('task-item');
       li.dataset.id = task.id;
@@ -90,25 +85,66 @@ document.addEventListener('DOMContentLoaded', () => {
         taskDescription.value = task.description;
         document.getElementById('modal-title').textContent = 'Editar Tarea';
         modalContainer.style.display = 'flex';
-        editingTaskId = task.id; // Almacenar el ID para editar
+        editingTaskId = task.id;
       });
 
       li.querySelector('.delete-task').addEventListener('click', () => {
-        taskManager.deleteTask(task.id); // Eliminar tarea
-        renderTasks(); // Volver a renderizar
+        taskManager.deleteTask(task.id);
+        renderTasks();
       });
 
-      taskList.appendChild(li);
+      // Insertar la tarea en la parte superior de la lista
+      taskList.insertBefore(li, taskList.firstChild);
     });
   }
 
-  // Inicializar tareas al cargar la página
+  // Renderizar tareas iniciales
   renderTasks();
 
-  // Botón de cerrar sesión
-  const logoutBtn = document.getElementById('logoutBtn');
-  logoutBtn.addEventListener('click', () => {
+  // Cerrar sesión
+  document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('userToken');
     window.location.href = 'index.html';
   });
 });
+
+const API_URL = "http://localhost:3000";
+
+async function getUserInfo(token) {
+  try {
+    const response = await fetch(`${API_URL}/user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById("userName").textContent = data.name;
+      document.getElementById("userEmail").textContent = data.email;
+    } else {
+      console.error("Error al obtener información del usuario:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+// Simulación de inicio de sesión para obtener un token
+(async function simulateLogin() {
+  const loginResponse = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "test@example.com", password: "123456" }),
+  });
+
+  if (loginResponse.ok) {
+    const { token } = await loginResponse.json();
+    localStorage.setItem("token", token);
+    getUserInfo(token);
+  } else {
+    console.error("Error al iniciar sesión");
+  }
+})();

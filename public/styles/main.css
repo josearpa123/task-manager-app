@@ -1,10 +1,10 @@
 :root {
-    --violeta: #6a0dad;
-    --violeta-claro: #a76fc1;
-    --amarillo: #fbc02d;
-    --blanco: #ffffff;
-    --gris-claro: #f1f1f1;
-    --gris-oscuro: #333333;
+    --azul: #4a90e2; /* Azul elegante y moderno */
+    --azul-claro: #6ec6ff; /* Azul más suave */
+    --gris-oscuro: #2c3e50; /* Gris oscuro para el texto */
+    --gris-claro: #ecf0f1; /* Gris suave para fondo */
+    --blanco: #ffffff; /* Blanco */
+    --dorado: #f39c12; /* Acento dorado */
 }
 
 * {
@@ -15,27 +15,64 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--violeta-claro);
+    background-color: var(--gris-claro);
     color: var(--gris-oscuro);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: linear-gradient(135deg, var(--violeta), var(--violeta-claro));
+    background-image: linear-gradient(135deg, var(--azul), var(--azul-claro));
+    position: relative;
 }
 
-/* Contenedor principal */
+/* Información del usuario y Cerrar sesión en la esquina superior derecha */
+.logout-section {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: var(--blanco);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 250px;
+}
+
+.user-info {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: var(--blanco);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
 .container {
     background-color: var(--blanco);
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;  /* Aumento del tamaño para pantallas grandes */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
     width: 100%;
     animation: fadeIn 1s ease;
+    margin-top: 120px;
 }
 
-/* Animación de entrada */
 @keyframes fadeIn {
     0% {
         opacity: 0;
@@ -50,7 +87,7 @@ body {
 h1 {
     text-align: center;
     font-size: 1.8rem;
-    color: var(--violeta);
+    color: var(--azul);
     margin-bottom: 20px;
 }
 
@@ -63,7 +100,7 @@ button,
 textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid var(--violeta);
+    border: 2px solid var(--azul);
     border-radius: 10px;
     margin-top: 10px;
     font-size: 1rem;
@@ -73,12 +110,12 @@ input:focus,
 textarea:focus,
 button:focus {
     outline: none;
-    box-shadow: 0 0 10px var(--violeta);
+    box-shadow: 0 0 10px var(--azul);
 }
 
 input[type="submit"],
 button {
-    background-color: var(--violeta);
+    background-color: var(--azul);
     color: var(--blanco);
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -86,7 +123,7 @@ button {
 
 input[type="submit"]:hover,
 button:hover {
-    background-color: var(--violeta-claro);
+    background-color: var(--azul-claro);
 }
 
 .error-message {
@@ -97,7 +134,7 @@ button:hover {
 }
 
 a {
-    color: var(--violeta);
+    color: var(--azul);
     text-decoration: none;
     font-size: 0.9rem;
 }
@@ -117,7 +154,7 @@ button {
 
 /* Modificar el modal */
 .modal-container {
-    max-width: 600px;  /* Ajusta el tamaño del modal */
+    max-width: 600px;
     margin: 0 auto;
 }
 
@@ -129,15 +166,13 @@ button {
     }
 }
 
-/* Asegurando que los textarea no se salgan del contenedor */
 textarea {
     height: 150px;
-    resize: vertical;  /* Permitir redimensionar solo verticalmente */
+    resize: vertical;
     padding: 10px;
     font-size: 14px;
 }
 
-/* Estilo de la lista de tareas */
 .task-list {
     margin-top: 20px;
     list-style-type: none;
@@ -155,14 +190,14 @@ textarea {
 }
 
 .task-item:hover {
-    background-color: var(--violeta-claro);
+    background-color: var(--azul-claro);
     cursor: pointer;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 button {
-    background-color: var(--amarillo);
-    color: var(--gris-oscuro);
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
     border: none;
     padding: 10px;
     border-radius: 5px;
@@ -171,6 +206,98 @@ button {
 }
 
 button:hover {
-    background-color: var(--violeta);
+    background-color: var(--azul);
     color: var(--blanco);
+}
+
+.task-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--gris-oscuro);
+    margin-bottom: 5px;
+}
+
+.task-description {
+    font-size: 0.9rem;
+    color: var(--gris-oscuro);
+}
+
+.task-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-actions {
+    text-align: center;
+}
+
+.modal-actions button {
+    background-color: var(--dorado);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-actions button:hover {
+    background-color: #e67e22;
 }
